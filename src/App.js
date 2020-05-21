@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled, {keyframes} from 'styled-components';
+import {inject, observer} from 'mobx-react';
+import {toJS} from 'mobx';
 
 import logo from './logo.svg';
 import enemyIcon from './angular-icon.svg';
@@ -62,11 +64,7 @@ const Cell = styled.div`
   }
 `;
 
-function App() {
-  const [playerRowPosition, updatePlayerRowPosition] = useState(0);
-  const [playerCellPosition, updatePlayerCellPosition] = useState(0);
-  const [enemyPosition, updateEnemyPosition] = useState({rowCoordinate: 5, cellCoordinate: 5});
-
+const App = ({AppStore}) => {
   const gridSize = 9;
   let rows = [];
   let cells = [];
@@ -81,75 +79,8 @@ function App() {
     cells=[];
   }
 
-  const playerMove = (row, cell) => {
-    console.log(`moving to ${row}, ${cell}`);
-    if(playerRowPosition !== row || playerCellPosition !== cell) {
-      updatePlayerRowPosition(row);
-      updatePlayerCellPosition(cell);
-      enemyMove();
-    }
-  };
-
-  const enemyMove = () => {
-    const randomDirection = Math.floor( Math.random() * 9) + 1;
-    switch (randomDirection) {
-      case 1:
-        console.log('enemy move down left');
-        if(enemyPosition.rowCoordinate < gridSize - 1 && enemyPosition.cellCoordinate > 0) {
-          updateEnemyPosition({rowCoordinate: enemyPosition.rowCoordinate + 1, cellCoordinate: enemyPosition.cellCoordinate - 1});
-        }
-        break;
-      case 2: 
-        console.log('enemy move down');
-        if(enemyPosition.rowCoordinate < gridSize - 1) {
-          updateEnemyPosition({ rowCoordinate: enemyPosition.rowCoordinate + 1, cellCoordinate: enemyPosition.cellCoordinate});
-        }
-        break;
-      case 3: 
-        console.log('enemy move down right');
-        if(enemyPosition.rowCoordinate < gridSize - 1 && enemyPosition.cellCoordinate < gridSize - 1) {
-          updateEnemyPosition({rowCoordinate: enemyPosition.rowCoordinate + 1, cellCoordinate: enemyPosition.cellCoordinate + 1});
-        }
-        break;
-      case 4: 
-        console.log('enemy move left');
-        if(enemyPosition.cellCoordinate > 0) {
-          updateEnemyPosition({rowCoordinate: enemyPosition.rowCoordinate, cellCoordinate: enemyPosition.cellCoordinate - 1});
-        }
-        break;
-      case 5: 
-        console.log(`enemy won't move`);
-        break;
-      case 6: 
-        console.log('enemy move right');
-        if (enemyPosition.cellCoordinate < gridSize - 1) {
-          updateEnemyPosition({rowCoordinate: enemyPosition.rowCoordinate, cellCoordinate: enemyPosition.cellCoordinate + 1})
-        }
-        break;
-      case 7: 
-        console.log('enemy move up left');
-        if(enemyPosition.rowCoordinate > 0 && enemyPosition.cellCoordinate > 0) {
-          updateEnemyPosition({rowCoordinate: enemyPosition.rowCoordinate - 1, cellCoordinate: enemyPosition.cellCoordinate - 1})
-        }
-        break;
-      case 8: 
-        console.log('enemy move up');
-        if(enemyPosition.rowCoordinate > 0) {
-          updateEnemyPosition({rowCoordinate: enemyPosition.rowCoordinate - 1, cellCoordinate: enemyPosition.cellCoordinate});
-        }
-        break;
-      case 9: 
-        console.log('enemy move up right');
-        if(enemyPosition.rowCoordinate && enemyPosition.cellCoordinate < gridSize - 1) {
-          updateEnemyPosition({rowCoordinate: enemyPosition.rowCoordinate - 1, cellCoordinate: enemyPosition.cellCoordinate + 1})
-        }
-        break;
-
-      default: 
-        console.log('oops');
-        break;
-    }
-  };
+  const playerPosition = toJS(AppStore.playerPosition);
+  const enemyPosition = toJS(AppStore.enemyPosition);
 
   const handleInput = (input) => {
     console.log(input.key);
@@ -174,18 +105,21 @@ function App() {
                     return(
                       <Cell 
                         key={`${cell.coordinate}-${index}`}
-                        onClick={ () => { playerMove(cell.props.rowCoordinate, cell.props.cellCoordinate)} }
+                        onClick={ () => { 
+                          AppStore.movePlayer(cell.props.rowCoordinate, cell.props.cellCoordinate);
+                          AppStore.moveEnemy();
+                        }}
                       >
 
                         {
-                          playerRowPosition === cell.props.rowCoordinate &&
-                          playerCellPosition === cell.props.cellCoordinate &&
+                          playerPosition.row === cell.props.rowCoordinate &&
+                          playerPosition.cell === cell.props.cellCoordinate &&
                           <img className='player' src={logo} alt='player icon' />
                         }
 
                         {
-                          enemyPosition.rowCoordinate === cell.props.rowCoordinate &&
-                          enemyPosition.cellCoordinate === cell.props.cellCoordinate &&
+                          enemyPosition.row === cell.props.rowCoordinate &&
+                          enemyPosition.cell === cell.props.cellCoordinate &&
                           <img className='enemy' src={enemyIcon} alt='enemy icon' />
                         }
 
@@ -202,4 +136,4 @@ function App() {
   );
 }
 
-export default App;
+export default inject('AppStore')(observer(App));

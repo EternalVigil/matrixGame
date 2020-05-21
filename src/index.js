@@ -4,10 +4,13 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import {Provider} from 'mobx-react';
+import DataStore from './stores/DataStore';
+
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider AppStore={DataStore}>
     <App />
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById('root')
 );
 
