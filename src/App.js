@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled, {keyframes} from 'styled-components';
 import {inject, observer} from 'mobx-react';
-import {toJS} from 'mobx';
+// import {toJS} from 'mobx';
 
 import logo from './logo.svg';
 import enemyIcon from './angular-icon.svg';
@@ -79,17 +79,35 @@ const App = ({AppStore}) => {
     cells=[];
   }
 
-  const playerPosition = toJS(AppStore.playerPosition);
-  const enemyPosition = toJS(AppStore.enemyPosition);
+  const playerPosition = AppStore.playerPosition;
+  const enemyPosition = AppStore.enemyPosition;
 
-  const handleInput = (input) => {
-    console.log(input.key);
-  };
+  useEffect( () => {
+     const handleInput = (input) => {
+       // TO DO: Add check for out of bounds movement
+       // TO DO: Account for diagonal moves
+       if(input.key === 'ArrowDown') {
+         AppStore.movePlayer(playerPosition.row + 1, playerPosition.cell);
+       }
 
-  useEffect(() => {
-    window.addEventListener('keydown', event => handleInput(event));
-    return () => window.removeEventListener('keydown', handleInput);
+       if(input.key === 'ArrowUp') {
+         AppStore.movePlayer(playerPosition.row - 1, playerPosition.cell);
+       }
+
+       if(input.key === 'ArrowLeft') {
+         AppStore.movePlayer(playerPosition.row, playerPosition.cell - 1);
+       }
+
+       if(input.key === 'ArrowRight') {
+         AppStore.movePlayer(playerPosition.row, playerPosition.cell + 1);
+       }
+
+     };
+
+     window.addEventListener('keydown', event => handleInput(event));
+     return () => {window.removeEventListener('keydown', handleInput)};
   }, []);
+
 
   return (
     <AppContainer>
