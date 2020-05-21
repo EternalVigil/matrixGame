@@ -5,9 +5,16 @@ class DataStore {
 		console.log('initializing datastore');
 	}
 
+	// grid constructor size
 	gridSize = observable.box(9);
+
+	// player states
 	playerPosition = observable({row: 0, cell: 0});
+	playerPowerLevel = observable.box(1);
+
+	// enemy states
 	enemyPosition = observable({row: 4, cell: 4});
+	enemyPowerLevel = observable.box(2);
 
 	movePlayer = action( (targetRow, targetCell) => {
 		if(this.playerPosition.row !== targetRow) {
