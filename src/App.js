@@ -84,7 +84,6 @@ const App = ({AppStore}) => {
 
   useEffect( () => {
      const handleInput = (input) => {
-       // TO DO: Add enemy movement to player movement
        // TO DO: Add check for out of bounds movement
        // TO DO: Account for diagonal moves
        if(input.key === 'ArrowDown') {
