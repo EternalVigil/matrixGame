@@ -10,10 +10,12 @@ class DataStore {
 
 	// player states
 	playerPosition = observable({row: 0, cell: 0});
+	playerAttackRange = observable.box(1);
 	playerPowerLevel = observable.box(1);
 
 	// enemy states
 	enemyPosition = observable({row: 4, cell: 4});
+	enemyAttackRange = observable.box(2);
 	enemyPowerLevel = observable.box(2);
 
 	movePlayer = action( (targetRow, targetCell) => {

@@ -47,9 +47,15 @@ const Cell = styled.div`
   align-items: center;
   flex: 0 0 calc(100% / 9);
   height: 100%;
-  border: 1px dashed #ececec;
+  border: 1px dashed #fff;
   overflow: hidden;
   cursor: pointer;
+
+  &.playerRange {
+    background-color: blue;
+  }
+
+
 
   img {
     position: absolute;
@@ -80,7 +86,24 @@ const App = ({AppStore}) => {
   }
 
   const playerPosition = AppStore.playerPosition;
+  const playerAttackRange = AppStore.playerAttackRange.get();
   const enemyPosition = AppStore.enemyPosition;
+
+  const highlightAttackRange = (row, cell) => {
+    let cellClasses = [];
+
+    if( 
+        (row === playerPosition.row && (cell === playerPosition.cell - playerAttackRange || cell === playerPosition.cell + playerAttackRange))
+        ||
+        (cell === playerPosition.cell && (row === playerPosition.row - playerAttackRange || row === playerPosition.row + playerAttackRange))
+      ) {
+      cellClasses.push('playerRange');
+    }
+    
+
+    return(cellClasses);
+
+  };
 
   useEffect( () => {
      const handleInput = (input) => {
@@ -127,6 +150,7 @@ const App = ({AppStore}) => {
                     return(
                       <Cell 
                         key={`${cell.coordinate}-${index}`}
+                        className={highlightAttackRange(cell.props.rowCoordinate, cell.props.cellCoordinate)}
                         onClick={ () => { 
                           AppStore.movePlayer(cell.props.rowCoordinate, cell.props.cellCoordinate);
                           AppStore.moveEnemy();
