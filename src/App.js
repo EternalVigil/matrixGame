@@ -32,11 +32,12 @@ const Grid = styled.div`
   align-items: center;
   width: 50vw;
   height: 50vw;
+  padding: 2%;
 `;
 
 const Row = styled.div`
   display: flex;
-  flex: 0 0 calc(100% / 9);
+  flex: 1 auto;
   width: 100%;
 `;
 
@@ -45,7 +46,7 @@ const Cell = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 0 0 calc(100% / 9);
+  flex: 1 auto;
   height: 100%;
   border: 1px dashed #fff;
   overflow: hidden;
