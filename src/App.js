@@ -84,24 +84,24 @@ const App = ({AppStore}) => {
 
   useEffect( () => {
      const handleInput = (input) => {
-       // TO DO: Add check for out of bounds movement
+       // TO DO: Add check for out of bounds movement (diagonals still outstanding)
        // TO DO: Account for diagonal moves
-       if(input.key === 'ArrowDown') {
+       if(input.key === 'ArrowDown' && playerPosition.row < gridSize - 1) {
          AppStore.movePlayer(playerPosition.row + 1, playerPosition.cell);
          AppStore.moveEnemy();
        }
 
-       if(input.key === 'ArrowUp') {
+       if(input.key === 'ArrowUp' && playerPosition.row > 0) {
          AppStore.movePlayer(playerPosition.row - 1, playerPosition.cell);
          AppStore.moveEnemy();
        }
 
-       if(input.key === 'ArrowLeft') {
+       if(input.key === 'ArrowLeft' && playerPosition.cell > 0) {
          AppStore.movePlayer(playerPosition.row, playerPosition.cell - 1);
          AppStore.moveEnemy();
        }
 
-       if(input.key === 'ArrowRight') {
+       if(input.key === 'ArrowRight' && playerPosition.cell < gridSize - 1) {
          AppStore.movePlayer(playerPosition.row, playerPosition.cell + 1);
          AppStore.moveEnemy();
        }
